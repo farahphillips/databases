@@ -6,12 +6,16 @@ var db = require('../db/index.js');
 module.exports = {
   messages: {
     get: function (req, res) {
-      models.messages.get()
+      var response = {}
+      connection.query('SELECT * FROM messages', function(err, rows, fields) {
+        response['res'] = rows
+        res.json(response)
+      })
     },
 
     post: function (req, res) {
-      console.log(req.body)
-      console.log(req.body["username"])
+      // console.log(req.body)
+      // console.log(req.body["username"])
       models.messages.post(req.body["username"], req.body["roomname"], req.body["message"])
       res.status(201).end()
     }
