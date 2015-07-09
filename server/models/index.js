@@ -3,14 +3,15 @@ var connection = require('../db/');
 module.exports = {
   messages: {
     get: function (req, res) {
-      connection.query('SELECT * FROM messages', function(err) {
-        if (err) throw err;
+      var response = {}
+      connection.query('SELECT * FROM messages', function(err, rows, fields) {
+        response['res'] = rows
+        res.json(response)
       })
-
     },
     post: function (user, room, msg) {
+      console.log("INSERT INTO messages (user, roomname, msgs) VALUES (" + connection.escape(user) + "," + connection.escape(room) + "," + connection.escape(msg) + ")")
       connection.query("INSERT INTO messages (user, roomname, msgs) VALUES (" + connection.escape(user) + "," + connection.escape(room) + "," + connection.escape(msg) + ")")
-
     }
   },
 
@@ -20,10 +21,9 @@ module.exports = {
         if (err) throw err;
       })
     },
-    post: function (req, res) {
-      var generatedQuery = "INSERT INTO users (username) VALUES '('"+req.body.username+"')'"
-      connection.query(generatedQuery)
-      res.end()
+    post: function (username) {
+      console.log("INSERT INTO users (username) VALUES (" + connection.escape(username) + ")")
+      connection.query("INSERT INTO users (username) VALUES (" + connection.escape(username) + ")")
     }
   }
 };
